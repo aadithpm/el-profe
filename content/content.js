@@ -23,7 +23,9 @@ browser.storage.local
   });
 
 // Returns a Map from original line -> translation (cache-first).
-async function translateLines(lines, language) {
+// Target language is inferred from the browser locale.
+async function translateLines(lines) {
+  const language = navigator.language;
   const cached = await TranslationCache.get(lines, language);
   if (cached) return cached;
 
@@ -33,20 +35,16 @@ async function translateLines(lines, language) {
     return new Map(lines.map((l) => [l, l]));
   }
 
-  const translationMap = await ClaudeTranslator.translate(
-    lines,
-    language,
-    apiKey,
-  );
+  const translationMap = await ClaudeTranslator.translate(lines, language, apiKey);
   await TranslationCache.set(lines, language, translationMap);
   return translationMap;
 }
 
 // insert each translated line in-line in different formatting
-async function insertTranslations(node, lines, { language }) {
+async function insertTranslations(node, lines) {
   node.textContent = "";
 
-  const translationMap = await translateLines(lines, language);
+  const translationMap = await translateLines(lines);
 
   for (const line of lines) {
     node.appendChild(document.createTextNode(line));
@@ -54,7 +52,7 @@ async function insertTranslations(node, lines, { language }) {
 
     if (line.trim()) {
       const translation = translationMap.get(line) ?? line;
-      log("translating", { original: line, translation, language });
+      log("translated line", { original: line, translation });
 
       const em = document.createElement("em");
       em.textContent = translation;
@@ -79,8 +77,7 @@ let lastLines = null;
 let pendingObserver = null;
 
 // Attaches an observer to find the lyrics node and insert translations
-// Observer polls every second
-function applyLyrics(lines, language) {
+function applyLyrics(lines) {
   // if we're applying lyrics edits, we already found the node
   // so disconnect the observer so we aren't polling more
   if (pendingObserver) {
@@ -91,7 +88,7 @@ function applyLyrics(lines, language) {
   const nodes = document.querySelectorAll(SELECTOR);
 
   if (nodes.length) {
-    nodes.forEach((node) => insertTranslations(node, lines, { language }));
+    nodes.forEach((node) => insertTranslations(node, lines));
     return;
   }
 
@@ -103,7 +100,7 @@ function applyLyrics(lines, language) {
     pendingObserver.disconnect();
     pendingObserver = null;
     setTimeout(() => {
-      nodes.forEach((node) => insertTranslations(node, lines, { language }));
+      nodes.forEach((node) => insertTranslations(node, lines));
     }, 1000);
   });
   pendingObserver.observe(document.body, { childList: true, subtree: true });
@@ -117,18 +114,14 @@ window.addEventListener("message", (event) => {
   lastLines = lines;
 
   browser.storage.local
-    .get({ enabled: true, language: "", apiKey: "" })
-    .then(({ enabled, language, apiKey }) => {
+    .get({ enabled: true, apiKey: "" })
+    .then(({ enabled, apiKey }) => {
       if (!enabled) return;
       if (!apiKey) {
         log("no API key set, skipping translation.");
         return;
       }
-      if (!language) {
-        log("no target language set, skipping translation.");
-        return;
-      }
-      applyLyrics(lines, language);
+      applyLyrics(lines);
     });
 });
 
@@ -149,12 +142,9 @@ browser.storage.onChanged.addListener((changes) => {
   }
 
   if ("enabled" in changes && changes.enabled.newValue === true && lastLines) {
-    browser.storage.local
-      .get({ language: "", apiKey: "" })
-      .then(({ language, apiKey }) => {
-        if (!apiKey) return;
-        if (!language) return;
-        applyLyrics(lastLines, language);
-      });
+    browser.storage.local.get({ apiKey: "" }).then(({ apiKey }) => {
+      if (!apiKey) return;
+      applyLyrics(lastLines);
+    });
   }
 });

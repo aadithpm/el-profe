@@ -19,6 +19,8 @@ Generated with [D2](https://d2lang.com/).
 
 #### Disclosures
 
+I do not commit to active development of this feature outside of major bug fixes or security vulnerabilities. This is feature complete for the purpose I set out to achieve and I'll _maybe_ add support for additional translators/popular model providers in the future. The licensing should allow anyone to fork and create an improved version though.
+
 ##### AI usage disclosure
 
 This extension was built collaboratively with Claude Code. However, development was done iteratively with consistent review & pieces of human written code. This is **not** vibe coded, and I've reviewed everything that was written multiple times - so it's prone to be very buggy and not feature complete :)

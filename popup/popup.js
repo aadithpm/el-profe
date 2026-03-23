@@ -5,7 +5,6 @@ const noApiKeyBanner = document.getElementById("no-api-key-banner");
 const apiKeysSection = document.getElementById("api-keys-section");
 const tokenUsageEl = document.getElementById("token-usage");
 const apiKeyInput = document.getElementById("api-key-input");
-const langInput = document.getElementById("language-input");
 const debugCheckbox = document.getElementById("debug-checkbox");
 const controls = document.getElementById("controls");
 const notYtmBanner = document.getElementById("not-ytm-banner");
@@ -37,16 +36,15 @@ browser.tabs.query({ active: true, currentWindow: true }).then(([tab]) => {
   }
 
   browser.storage.local
-    .get({ enabled: true, language: "", apiKey: "", debugLogging: false, tokenUsage: { input_tokens: 0, output_tokens: 0 } })
-    .then(({ enabled, language, apiKey, debugLogging: stored, tokenUsage }) => {
+    .get({ enabled: true, apiKey: "", debugLogging: false, tokenUsage: { input_tokens: 0, output_tokens: 0 } })
+    .then(({ enabled, apiKey, debugLogging: stored, tokenUsage }) => {
       log.debug = stored;
       updateButton(enabled);
       apiKeyInput.value = apiKey;
-      langInput.value = language;
       debugCheckbox.checked = stored;
       updateApiKeyBanner(apiKey);
       updateTokenUsage(tokenUsage);
-      log("popup loaded", { enabled, language, debugLogging: stored });
+      log("popup loaded", { enabled, debugLogging: stored });
     });
 });
 
@@ -74,11 +72,6 @@ apiKeyInput.addEventListener("input", () => {
   log("api key changed");
 });
 
-langInput.addEventListener("input", () => {
-  const language = langInput.value.trim();
-  browser.storage.local.set({ language });
-  log("language changed", { language });
-});
 
 debugCheckbox.addEventListener("change", () => {
   log.debug = debugCheckbox.checked;

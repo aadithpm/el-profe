@@ -13,6 +13,7 @@ A Firefox extension that intercepts YouTube Music's `youtubei/v1/browse` API res
 #### Architecture
 
 - `content/interceptor.js` is injected into the page JS context (via a `<script>` tag) so it can wrap `window.fetch` and intercept browse responses. It relays lyrics to the content script via `window.postMessage`.
-- `content/content.js` receives lyrics, checks storage for `enabled`/`language`/`apiKey`, then calls `applyLyrics` which uses a `MutationObserver` to find the lyrics nodes and insert translations inline.
+- `content/content.js` receives lyrics, checks storage for `enabled`/`apiKey`, then calls `applyLyrics` which uses a `MutationObserver` to find the lyrics nodes and insert translations inline.
+- The target language is inferred from `navigator.language` (browser locale) — there is no user-facing language setting.
 - Translations are cached per-track in `browser.storage.local` keyed by a djb2 hash of the lyrics + language. Running token totals (`tokenUsage`) are also persisted in storage and shown in the popup.
 - `shared/log.js` defines a global `log()` that gates on `log.debug`, controlled via the popup's debug checkbox.
