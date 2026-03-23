@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>El Profe</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <h1>El Profe</h1>
+  <div id="not-ytm-banner" hidden>
+    <p>Navigate to <strong>music.youtube.com</strong> to use El Profe.</p>
+  </div>
+  <div id="controls">
+    <p>Enable/disable in-line translation for lyrics in Youtube Music</p>
+    <button id="toggle-btn">...</button>
+    <div id="reload-banner" hidden>
+      <span>Reload page for change to take effect</span>
+      <button id="reload-btn">Reload</button>
+    </div>
+
+    <div id="no-api-key-banner" hidden>
+      <span>⚠ Set at least one API key below to enable translation.</span>
+    </div>
+
+    <details id="api-keys-section">
+      <summary>API Keys</summary>
+      <div class="api-keys-list">
+        <label for="api-key-input">Anthropic (Claude)</label>
+        <input id="api-key-input" type="password" placeholder="sk-ant-..." />
+      </div>
+      <p id="token-usage"></p>
+    </details>
+
+    <label for="language-input">Translate to</label>
+    <input id="language-input" type="text" placeholder="e.g. English" />
+    <label class="checkbox-label">
+      <input id="debug-checkbox" type="checkbox" />
+      Debug logging
+    </label>
+  </div>
+  <script src="../shared/log.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+classes: {
+  youtube: {
+    style: {
+      fill: "#FF6961"
+    }
+  }
+  not_ready: {
+    style: {
+      fill: "#DDDDDD"
+    }
+  }
+  translator_module: {
+    style: {
+      fill: "#AEC6CF"
+    }
+  }
+  system: {
+    width: 700
+    label: "What the extension does"
+  }
+  external: {
+    label: "External"
+    label.near: bottom-right
+  }
+}
+
+Key
+
+Key.Unimplemented
+Key.Unimplemented.class: not_ready
+Key.Extension
+Key.Youtube
+Key.Youtube.class: youtube
+
+System
+System.class: "system"
+
+External
+External.class: "external"
+
+External.YT Music -> External.YT Music API: get lyrics on song load
+External.YT Music.class: youtube
+External.YT Music API.class: youtube
+
+System.Interceptor <- External.YT Music API: parse lyrics from response
+System.El Profe -> System.Interceptor: inject interceptor
+System.El Profe -> System.Content script
+System.Interceptor -> System.Content script: lyrics in source lang.
+System.Content script <-> System.Browser cache: cache lookup/store by lyrics djb2 hash
+System.Content script -> System.Translator: HTTP call if track not in cache
+System.Translator -> External.Claude: requires Anthropic API key
+External.Claude.class: translator_module
+System.Translator -> External.DeepL
+External.DeepL.class: not_ready
+System.Translator -> External.ChatGPT
+External.ChatGPT.class: not_ready
+System.Translator -> External.Google Cloud
+External.Google Cloud.class: not_ready

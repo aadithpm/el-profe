@@ -1,0 +1,18 @@
+{
+  "manifest_version": 2,
+  "name": "El Profe",
+  "version": "1.0.0",
+  "description": "A Firefox extension.",
+  "permissions": ["storage", "tabs", "https://api.anthropic.com/*"],
+  "web_accessible_resources": ["content/interceptor.js"],
+  "browser_action": {
+    "default_popup": "popup/popup.html",
+    "default_title": "El Profe"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://music.youtube.com/*"],
+      "js": ["shared/log.js", "translators/cache.js", "translators/claude.js", "content/content.js"]
+    }
+  ]
+}
