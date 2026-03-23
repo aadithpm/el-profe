@@ -1,5 +1,7 @@
 ### El Profe
 
+[**Available for Firefox in the Add-on store**](https://addons.mozilla.org/en-US/firefox/addon/el-profe-yt-music-translator/)
+
 A simple Firefox extension that performs DOM manipulation to insert translated lyrics in-line in the Youtube Music SPA. Enable/disable through toolbar, lyrics will be auto-detected and translated to language configured through toolbar.
 
 Translation requires a Translator module to be configured. Currently supported modules:
