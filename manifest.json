@@ -3,6 +3,15 @@
   "name": "El Profe",
   "version": "1.0.0",
   "description": "A Firefox extension.",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "elprofe@aadithpm.xyz",
+      "data_collection_permissions": {
+        "required": ["none"],
+        "optional": []
+      }
+    }
+  },
   "permissions": ["storage", "tabs", "https://api.anthropic.com/*"],
   "web_accessible_resources": ["content/interceptor.js"],
   "browser_action": {
@@ -12,7 +21,12 @@
   "content_scripts": [
     {
       "matches": ["*://music.youtube.com/*"],
-      "js": ["shared/log.js", "translators/cache.js", "translators/claude.js", "content/content.js"]
+      "js": [
+        "shared/log.js",
+        "translators/cache.js",
+        "translators/claude.js",
+        "content/content.js"
+      ]
     }
   ]
 }
